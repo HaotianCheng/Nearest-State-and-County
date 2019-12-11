@@ -12,3 +12,6 @@ To run the file:
 ```bash
 java /Project/Draw
 ```
+## GUI guide
+Once run the file, it should look similar below
+![GUI](https://raw.githubusercontent.com/HaotianCheng/Nearest-State-and-County/master/SampleGUI1.png)
