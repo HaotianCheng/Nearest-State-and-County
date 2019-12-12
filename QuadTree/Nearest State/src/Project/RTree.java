@@ -61,11 +61,12 @@ public class RTree {
 		}
 		else if(not_leaf) //Non-leaf case
 		{
-			System.out.println("????");
+			System.out.println("Non-leaf case");
 			if(this.child1 != null)
 			{
 				if(is_contained_by(this.child1, node))
 				{
+					System.out.println("Recursion on child 1");
 					this.child1.insert(node);
 					return false;
 				}
@@ -74,6 +75,7 @@ public class RTree {
 			{
 				if(is_contained_by(this.child2, node))
 				{
+					System.out.println("Recursion on child 2");
 					this.child2.insert(node);
 					return false;
 				}
@@ -82,12 +84,14 @@ public class RTree {
 			{
 				if(is_contained_by(this.child3, node))
 				{
+					System.out.println("Recursion on child 3");
 					this.child3.insert(node);
 					return false;
 				}
 			}
-			else
-			{
+
+			
+				System.out.println("Didn't fit into children.");
 				double a1 = area_added(this.child1, node);
 				double a2 = area_added(this.child2, node);
 				double a3 = area_added(this.child3, node);
@@ -95,12 +99,16 @@ public class RTree {
 				{
 					if(a2 < a3)
 					{
+						System.out.println("Expanding child 2.");
 						expand_box(this.child2, node);
+						System.out.println("Inserting into child 2.");
 						this.child2.insert(node);
 					}
 					else
 					{
+						System.out.println("Expanding child 3.");
 						expand_box(this.child3, node);
+						System.out.println("Inserting into child 3.");
 						this.child3.insert(node);
 					}
 				}
@@ -108,39 +116,47 @@ public class RTree {
 				{
 					if(a1 < a3)
 					{
+						System.out.println("Expanding child 1.");
 						expand_box(this.child1, node);
+						System.out.println("Inserting into child 1.");
 						this.child1.insert(node);
 					}
 					else
 					{
+						System.out.println("Expanding child 3.");
 						expand_box(this.child3, node);
+						System.out.println("Inserting into child 3.");
 						this.child3.insert(node);
 					}
 				}
-			}
 		}
 		else //Leaf case
 		{
-			System.out.println("leaf case");
+			System.out.println("Leaf case");
 			if(this.child1 == null)
 			{
+				System.out.println("Creating new child 1 tree and inserting the node.");
 				this.child1 = new RTree();
 				this.child1.node = node; //Insert
 			}
 			else if(this.child2 == null)
 			{
+				System.out.println("Creating new child 2 tree and inserting the node.");
 				this.child2 = new RTree();
 				this.child2.node = node; //Insert
 			}
 			else if(this.child3 == null)
 			{
+				System.out.println("Creating new child 3 tree and inserting the node.");
 				this.child3 = new RTree();
 				this.child3.node = node; //Insert
 			}
 			else //Full
 			{
+				System.out.println("Tree is full.  Inserting into overflow.");
 				this.overflow = new RTree();
 				this.overflow.node = node;
+				System.out.println("Splitting tree.");
 				return split_tree(this);
 			}
 		}
@@ -161,8 +177,7 @@ public class RTree {
 	{
 		if(tree == null)
 		{
-			System.out.println("yikes");
-			return 0;
+			return Double.MAX_VALUE;
 		}
 		double x_min = tree.topleft.x;
 		double x_max = tree.bottomright.x;
@@ -292,6 +307,7 @@ public class RTree {
 			recalc_box(new_tree);
 			if(tree.parent == null)
 			{
+				System.out.println("Creating new root.");
 				tree.parent = new RTree();
 				tree.parent.child1 = tree;
 				tree.parent.child2 = new_tree;
@@ -300,22 +316,22 @@ public class RTree {
 			}
 			else if(tree.parent.child1 == null)
 			{
-				System.out.println("heyheyheyheyheyheyhey1");
+				System.out.println("Inserting new tree as parent's child 1");
 				tree.parent.child1 = new_tree;
 			}
 			else if(tree.parent.child2 == null)
 			{
-				System.out.println("heyheyheyheyheyheyhey2");
+				System.out.println("Inserting new tree as parent's child 2");
 				tree.parent.child2 = new_tree;
 			}
 			else if(tree.parent.child3 == null)
 			{
-				System.out.println("heyheyheyheyheyheyhey3");
+				System.out.println("Inserting new tree as parent's child 3");
 				tree.parent.child3 = new_tree;
 			}
 			else
 			{
-				System.out.println("heyheyheyheyheyheyhey4");
+				System.out.println("Inserted at parent. Parent overflowed and will now be split.");
 				tree.parent.overflow = new_tree;
 				split_tree(tree.parent);
 			}
