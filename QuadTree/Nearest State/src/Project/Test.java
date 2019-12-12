@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
+import javafx.util.Pair; 
 
 import Project.QuadTree.Node;
+import Project.KDTree;
+//import Project.KDTree.N;
 
 public class Test {
 	
-	public static QuadTree readGraph(String filename) throws FileNotFoundException {
+	public static Pair<ArrayList<Node>,double[]> readGraph(String filename) throws FileNotFoundException {
 		Scanner graphScanner = new Scanner (new File(filename)); // Scanner object to convert data to string
 		String line = graphScanner.nextLine(); // read the first line and skip
 		String[] lineArray;
@@ -62,13 +65,26 @@ public class Test {
 		}
 		
 		graphScanner.close(); 
-		
+		double[] bound = {minX,minY,maxX,maxY};
+		Pair<ArrayList<Node>,double[]> ans = new Pair<ArrayList<Node>,double[]>(nodes,bound);
+		return ans;
+	}
+	
+	public static QuadTree qt(ArrayList<Node> nodes, double minX,double minY, double maxX, double maxY) {
 		QuadTree root = new QuadTree(new Coord(minX, maxY), new Coord(maxX, minY));
 		for (Node node : nodes) {
 			root.insert(node);
 		}
 		return root;
 	}
+	public static KDTree kdt(ArrayList<Node> nodes) {
+		KDTree r = new KDTree(nodes.get(0));
+		for (int j=1;j<nodes.size();j++) {
+			r.insert(nodes.get(j));
+		}
+		return r;
+	}
+	
 	
 	public static String[] GetVotesResult(Node[] nearestNodes) {
 		HashMap<String, Integer> stateVotes = new HashMap<String, Integer>();
@@ -126,16 +142,14 @@ public class Test {
 	public static void main(String[] args) throws FileNotFoundException {
 		String filename = "test.txt";
 		Coord coord = new Coord(0, 0);
-		QuadTree root = readGraph(filename);
+		Pair<ArrayList<Node>,double[]> pair = Test.readGraph(filename);
+		QuadTree root = Test.qt(pair.getKey(), pair.getValue()[0],pair.getValue()[1] ,pair.getValue()[2], pair.getValue()[3]);
 		Node[] nearestNodes = new Node[10];
 		root.search(coord, nearestNodes);
-		
 		root.printTree("");
-		
 		for (Node node : nearestNodes) {
 			System.out.println(node);
 		}
-
 	}
 
 }

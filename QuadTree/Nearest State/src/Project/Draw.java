@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import javafx.util.Pair;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,9 +19,11 @@ import javax.swing.event.DocumentListener;
 
 import Project.QuadTree.Node;
 
+
 public class Draw {
 	
 	static QuadTree root;
+	static KDTree rootk;
 	int numToShow;
 	String dataStructure;
 	
@@ -61,7 +64,7 @@ public class Draw {
         JTextArea textArea = new JTextArea(14, 70);
         JRadioButton quad   = new JRadioButton("Quad", true);
         JRadioButton r    = new JRadioButton("R");
-        JRadioButton kd = new JRadioButton("Kd");
+        JRadioButton kd = new JRadioButton("Kd",true);
         JLabel nLabel = new JLabel("Num of results");
         
         textArea.setEditable(false);
@@ -113,19 +116,38 @@ public class Draw {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				Coord coord = new Coord(Double.parseDouble(longtitude.getText()), Double.parseDouble(lattitude.getText()));
-				Node[] nearestNodes = new Node[10];
-				if (root != null) {
-					root.search(coord, nearestNodes);
-				}	
-				String[] result = Test.GetVotesResult(nearestNodes);
-				textArea.setText("The point is in " + result[1] + ", " + result[0] + "\n");
-		    	textArea.append("Nearest States and County: \n");			
 				
-				for (int i = 0; i < numToShow; i++) {
-					textArea.append(nearestNodes[i].toString() + " Distance: " + String.format("%.3fkm\n", coord.distanceFrom(nearestNodes[i].point)));
+				if (dataStructure == "q") {
+					Node[] nearestNodes = new Node[10];
+					if (root != null) {
+						root.search(coord, nearestNodes);
+					}	
+					String[] result = Test.GetVotesResult(nearestNodes);
+					textArea.setText("The point is in " + result[1] + ", " + result[0] + "\n");
+			    	textArea.append("Nearest States and County: \n");			
+					
+					for (int i = 0; i < numToShow; i++) {
+						textArea.append(nearestNodes[i].toString() + " Distance: " + String.format("%.3fkm\n", coord.distanceFrom(nearestNodes[i].point)));
+					}
 				}
-				
+				else if (dataStructure == "k"){
+					Node[] nearestNodes = null;
+					if (rootk != null) {
+						nearestNodes = rootk.nearest(rootk.root,coord);
+					}	
+					String[] result = Test.GetVotesResult(nearestNodes);
+					textArea.setText("The point is in " + result[1] + ", " + result[0] + "\n");
+			    	textArea.append("Nearest States and County: \n");			
+					
+					for (int i = 0; i < numToShow; i++) {
+						textArea.append(nearestNodes[i].toString() + " Distance: " + String.format("%.3fkm\n", coord.distanceFrom(nearestNodes[i].point)));
+					}
+				}
+				else {
+					textArea.setText("Requested algorithm hasn't been implemented yet.\n");
+				}
 			}
         	
         });
@@ -313,7 +335,10 @@ public class Draw {
 		String filename = "NationalFile_StateProvinceDecimalLatLong.txt";
 		try {
 			if (buildDT) {
-				root = Test.readGraph(filename);
+	
+				Pair<ArrayList<Node>,double[]> pair = Test.readGraph(filename);
+				root = Test.qt(pair.getKey(), pair.getValue()[0],pair.getValue()[1] ,pair.getValue()[2], pair.getValue()[3]);
+				rootk = Test.kdt(pair.getKey());
 			}			
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
