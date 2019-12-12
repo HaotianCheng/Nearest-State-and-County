@@ -15,19 +15,20 @@ public class RTree {
 	public Coord topleft, bottomright;
 	
 	public void search(Coord coord, Node[] nodes) {
-		RTree thisone = this;
-		while(thisone.node == null)
+		RTree search_tree = this;
+		while(search_tree.node == null)
 		{
 			if(debug_mode)
 			{
-				System.out.println("Top left: " + thisone.topleft);
-				System.out.println("Bottom right: " + thisone.bottomright);
+				System.out.println("Top left: " + search_tree.topleft);
+				System.out.println("Bottom right: " + search_tree.bottomright);
 			}
-			thisone = thisone.child3;
+			search_tree = search_tree.child1;
+			System.out.println(search_tree);
 		}
 		for (int i = 0; i < 10; i++)
 		{
-			nodes[i] = thisone.node;
+			nodes[i] = search_tree.node;
 		}
 	}
 	
@@ -129,6 +130,7 @@ public class RTree {
 			System.out.println("first");
 			}
 			this.child1 = new RTree();
+			this.child1.parent = this;
 			this.child1.node = node; //Insert
 		}
 		else if(not_leaf) //Non-leaf case
@@ -238,6 +240,7 @@ public class RTree {
 				System.out.println("Creating new child 1 tree and inserting the node.");
 				}
 				this.child1 = new RTree();
+				this.child1.parent = this;
 				this.child1.node = node; //Insert
 			}
 			else if(this.child2 == null)
@@ -246,6 +249,7 @@ public class RTree {
 				System.out.println("Creating new child 2 tree and inserting the node.");
 				}
 				this.child2 = new RTree();
+				this.child2.parent = this;
 				this.child2.node = node; //Insert
 			}
 			else if(this.child3 == null)
@@ -254,6 +258,7 @@ public class RTree {
 				System.out.println("Creating new child 3 tree and inserting the node.");
 				}
 				this.child3 = new RTree();
+				this.child3.parent = this;
 				this.child3.node = node; //Insert
 			}
 			else //Full
@@ -262,6 +267,7 @@ public class RTree {
 				System.out.println("Tree is full.  Inserting into overflow.");
 				}
 				this.overflow = new RTree();
+				this.overflow.parent = this;
 				this.overflow.node = node;
 				if(debug_mode) {
 				System.out.println("Splitting tree.");
@@ -410,6 +416,8 @@ public class RTree {
 			RTree new_tree = new RTree();
 			new_tree.child1 = tree.child3;
 			new_tree.child2 = tree.overflow;
+			new_tree.child1.parent = new_tree;
+			new_tree.child2.parent = new_tree;
 			tree.child3 = null;
 			tree.overflow = null;
 			recalc_box(tree);
@@ -419,7 +427,9 @@ public class RTree {
 				if(debug_mode) {
 				System.out.println("Creating new root.");
 				}
-				tree.parent = new RTree();
+				RTree new_root = new RTree();
+				tree.parent = new_root;
+				new_tree.parent = new_root;
 				tree.parent.child1 = tree;
 				tree.parent.child2 = new_tree;
 				recalc_box(tree.parent);
