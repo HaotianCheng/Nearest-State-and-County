@@ -96,15 +96,27 @@ public class Test {
 			}
 			// county = Arrays.toString(Arrays.copyOfRange(lineArray, 1, lineArray.length - 2));
 			System.out.println(county);
-			x = Double.parseDouble(lineArray[lineArray.length-1]);
-			y = Double.parseDouble(lineArray[lineArray.length-2]);
+			x = Double.parseDouble(lineArray[lineArray.length-2]);
+			y = Double.parseDouble(lineArray[lineArray.length-1]);
 			Node node = new Node(x, y, state, county); // create correspond node object
 			nodes.add(node);
 			}
 			for (Node node : nodes) {
+				System.out.println("Inserting " + node.point.x + ", " + node.point.y);
 				if(rootR.insert(node) == true) {
 					rootR = rootR.parent;
 				};
+				if(rootR.parent != null)
+				{
+					rootR = rootR.parent;
+				}
+//				{
+//					rootR = rootR.parent;
+//				}
+				System.out.println("THE TREE AS IT CURRENTLY STANDS:");
+				System.out.println(rootR.parent == null);
+				rootR.print_tree(rootR);
+				System.out.println("_____________________________________");
 			}
 		return rootR;
 	}
@@ -166,10 +178,13 @@ public class Test {
 		String filename = "test.txt";
 		Coord coord = new Coord(0, 0);
 		QuadTree root = readGraph(filename);
+		RTree rootR = readGraphR(filename);
 		Node[] nearestNodes = new Node[10];
+		Node[] nearestNodesR = new Node[10];
 		root.search(coord, nearestNodes);
-		
-		root.printTree("");
+		//rootR.search(coord, nearestNodesR);
+		//rootR.print_tree(rootR);
+		//root.printTree("");
 		
 		for (Node node : nearestNodes) {
 			System.out.println(node);

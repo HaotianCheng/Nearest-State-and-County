@@ -1,13 +1,13 @@
 package Project;
 
 import java.lang.Math;
-import java.util.Arrays;
+import java.util.*;
 
 import Project.QuadTree.Node;
 import Project.Coord;
 
 public class RTree {
-	
+	boolean debug_mode = true; //Turn print statements on and off
 	int count = 0;
 	public Node node;
 	public RTree parent;
@@ -18,11 +18,75 @@ public class RTree {
 		RTree thisone = this;
 		while(thisone.node == null)
 		{
-			thisone = thisone.child1;
+			if(debug_mode)
+			{
+				System.out.println("Top left: " + thisone.topleft);
+				System.out.println("Bottom right: " + thisone.bottomright);
+			}
+			thisone = thisone.child3;
 		}
 		for (int i = 0; i < 10; i++)
 		{
 			nodes[i] = thisone.node;
+		}
+	}
+	
+	public void print_tree(RTree tree)
+	{
+		System.out.println("Top left: " + tree.topleft);
+		System.out.println("Bottom right: " + tree.bottomright);
+		if(tree.child1 != null)
+		{
+			if(tree.child1.node != null)
+			{
+				System.out.println("Child 1 is coord " + tree.child1.node.point.x + ", " + tree.child1.node.point.y);
+			}
+			else
+			{
+				System.out.println("Stepping down to child 1");
+				print_tree(tree.child1);
+				System.out.println("Stepping back up to box " + tree.topleft + ", " + tree.bottomright);
+			}
+		}
+		else
+		{
+			System.out.println("Child 1 not initialized.");
+		}
+		
+		if(tree.child2 != null)
+		{
+			if(tree.child2.node != null)
+			{
+				System.out.println("Child 2 is coord " + tree.child2.node.point.x + ", " + tree.child2.node.point.y);
+			}
+			else
+			{
+				System.out.println("Stepping down to child 2");
+				print_tree(tree.child2);
+				System.out.println("Stepping back up to box " + tree.topleft + ", " + tree.bottomright);
+			}
+		}
+		else
+		{
+			System.out.println("Child 2 not initialized.");
+		}
+		
+		if(tree.child3 != null)
+		{
+			if(tree.child3.node != null)
+			{
+				System.out.println("Child 3 is coord " + tree.child3.node.point.x + ", " + tree.child3.node.point.y);
+			}
+			else
+			{
+				System.out.println("Stepping down to child 3");
+				print_tree(tree.child3);
+				System.out.println("Stepping back up to box " + tree.topleft + ", " + tree.bottomright);
+			}
+		}
+		else
+		{
+			System.out.println("Child 3 not initialized.");
 		}
 	}
 	
@@ -32,7 +96,9 @@ public class RTree {
 		{
 			if(this.child1.node != null)
 			{
+				if(debug_mode) {
 				System.out.println("child1");
+				}
 				not_leaf = false;
 			}
 		}
@@ -40,7 +106,9 @@ public class RTree {
 		{
 			if(this.child2.node != null)
 			{
+				if(debug_mode) {
 				System.out.println("child2");
+				}
 				not_leaf = false;
 			}
 		}
@@ -48,25 +116,33 @@ public class RTree {
 		{
 			if(this.child3.node != null)
 			{
+				if(debug_mode) {
 				System.out.println("child3");
+				}
 				not_leaf = false;
 			}
 		}
 		
 		if(this.child1 == null & this.child2 == null & this.child3 == null) //First insertion case
 		{
+			if(debug_mode) {
 			System.out.println("first");
+			}
 			this.child1 = new RTree();
 			this.child1.node = node; //Insert
 		}
 		else if(not_leaf) //Non-leaf case
 		{
+			if(debug_mode) {
 			System.out.println("Non-leaf case");
+			}
 			if(this.child1 != null)
 			{
 				if(is_contained_by(this.child1, node))
 				{
+					if(debug_mode) {
 					System.out.println("Recursion on child 1");
+					}
 					this.child1.insert(node);
 					return false;
 				}
@@ -75,7 +151,9 @@ public class RTree {
 			{
 				if(is_contained_by(this.child2, node))
 				{
+					if(debug_mode) {
 					System.out.println("Recursion on child 2");
+					}
 					this.child2.insert(node);
 					return false;
 				}
@@ -84,14 +162,17 @@ public class RTree {
 			{
 				if(is_contained_by(this.child3, node))
 				{
+					if(debug_mode) {
 					System.out.println("Recursion on child 3");
+					}
 					this.child3.insert(node);
 					return false;
 				}
 			}
 
-			
+				if(debug_mode) {
 				System.out.println("Didn't fit into children.");
+				}
 				double a1 = area_added(this.child1, node);
 				double a2 = area_added(this.child2, node);
 				double a3 = area_added(this.child3, node);
@@ -99,16 +180,24 @@ public class RTree {
 				{
 					if(a2 < a3)
 					{
+						if(debug_mode) {
 						System.out.println("Expanding child 2.");
+						}
 						expand_box(this.child2, node);
+						if(debug_mode) {
 						System.out.println("Inserting into child 2.");
+						}
 						this.child2.insert(node);
 					}
 					else
 					{
+						if(debug_mode) {
 						System.out.println("Expanding child 3.");
+						}
 						expand_box(this.child3, node);
+						if(debug_mode) {
 						System.out.println("Inserting into child 3.");
+						}
 						this.child3.insert(node);
 					}
 				}
@@ -116,47 +205,67 @@ public class RTree {
 				{
 					if(a1 < a3)
 					{
+						if(debug_mode) {
 						System.out.println("Expanding child 1.");
+						}
 						expand_box(this.child1, node);
+						if(debug_mode) {
 						System.out.println("Inserting into child 1.");
+						}
 						this.child1.insert(node);
 					}
 					else
 					{
+						if(debug_mode) {
 						System.out.println("Expanding child 3.");
+						}
 						expand_box(this.child3, node);
+						if(debug_mode) {
 						System.out.println("Inserting into child 3.");
+						}
 						this.child3.insert(node);
 					}
 				}
 		}
 		else //Leaf case
 		{
+			if(debug_mode) {
 			System.out.println("Leaf case");
+			}
 			if(this.child1 == null)
 			{
+				if(debug_mode) {
 				System.out.println("Creating new child 1 tree and inserting the node.");
+				}
 				this.child1 = new RTree();
 				this.child1.node = node; //Insert
 			}
 			else if(this.child2 == null)
 			{
+				if(debug_mode) {
 				System.out.println("Creating new child 2 tree and inserting the node.");
+				}
 				this.child2 = new RTree();
 				this.child2.node = node; //Insert
 			}
 			else if(this.child3 == null)
 			{
+				if(debug_mode) {
 				System.out.println("Creating new child 3 tree and inserting the node.");
+				}
 				this.child3 = new RTree();
 				this.child3.node = node; //Insert
 			}
 			else //Full
 			{
+				if(debug_mode) {
 				System.out.println("Tree is full.  Inserting into overflow.");
+				}
 				this.overflow = new RTree();
 				this.overflow.node = node;
+				if(debug_mode) {
 				System.out.println("Splitting tree.");
+				}
 				return split_tree(this);
 			}
 		}
@@ -307,7 +416,9 @@ public class RTree {
 			recalc_box(new_tree);
 			if(tree.parent == null)
 			{
+				if(debug_mode) {
 				System.out.println("Creating new root.");
+				}
 				tree.parent = new RTree();
 				tree.parent.child1 = tree;
 				tree.parent.child2 = new_tree;
@@ -316,22 +427,30 @@ public class RTree {
 			}
 			else if(tree.parent.child1 == null)
 			{
+				if(debug_mode) {
 				System.out.println("Inserting new tree as parent's child 1");
+				}
 				tree.parent.child1 = new_tree;
 			}
 			else if(tree.parent.child2 == null)
 			{
+				if(debug_mode) {
 				System.out.println("Inserting new tree as parent's child 2");
+				}
 				tree.parent.child2 = new_tree;
 			}
 			else if(tree.parent.child3 == null)
 			{
+				if(debug_mode) {
 				System.out.println("Inserting new tree as parent's child 3");
+				}
 				tree.parent.child3 = new_tree;
 			}
 			else
 			{
+				if(debug_mode) {
 				System.out.println("Inserted at parent. Parent overflowed and will now be split.");
+				}
 				tree.parent.overflow = new_tree;
 				split_tree(tree.parent);
 			}
