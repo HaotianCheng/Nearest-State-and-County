@@ -21,17 +21,18 @@ import Project.QuadTree.Node;
 public class Draw {
 	
 	static QuadTree root;
+	static RTree rootR;
 	int numToShow;
-	String dataStructure;
+	String dataStructure = "q";
 	
     public Draw() throws IOException
     {	   	   	   	
     	
-    	JFrame frame = new JFrame("Nearest State & County");
+    	JFrame frame = new JFrame("Nearest State and County");
         frame.setLayout(new FlowLayout());
-        frame.setSize(800, 780);
+        frame.setSize(1600, 1560);
     	
-        BufferedImage img = ImageIO.read(new File("white-states_50.png"));
+        BufferedImage img = ImageIO.read(new File("white-states.png"));
         ImageIcon icon = new ImageIcon(img);        
         
         ArrayList<Point> points = new ArrayList<Point>(); 
@@ -56,8 +57,8 @@ public class Draw {
         JButton button = new JButton("GetResults");
         JTextField longtitude = new JTextField(8);
         JTextField lattitude = new JTextField(8);
-        JLabel xLabel = new JLabel("longtitude");
-        JLabel yLabel = new JLabel("lattitude");
+        JLabel xLabel = new JLabel("longitude");
+        JLabel yLabel = new JLabel("latitude");
         JTextArea textArea = new JTextArea(14, 70);
         JRadioButton quad   = new JRadioButton("Quad", true);
         JRadioButton r    = new JRadioButton("R");
@@ -115,8 +116,11 @@ public class Draw {
 			public void actionPerformed(ActionEvent e) {
 				Coord coord = new Coord(Double.parseDouble(longtitude.getText()), Double.parseDouble(lattitude.getText()));
 				Node[] nearestNodes = new Node[10];
-				if (root != null) {
+				if (root != null & dataStructure == "q") {
 					root.search(coord, nearestNodes);
+				}
+				if (root != null & dataStructure == "r") {
+					rootR.search(coord, nearestNodes);
 				}	
 				String[] result = Test.GetVotesResult(nearestNodes);
 				textArea.setText("The point is in " + result[1] + ", " + result[0] + "\n");
@@ -314,6 +318,8 @@ public class Draw {
 		try {
 			if (buildDT) {
 				root = Test.readGraph(filename);
+				System.out.println("Hey");
+				rootR = Test.readGraphR(filename);
 			}			
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

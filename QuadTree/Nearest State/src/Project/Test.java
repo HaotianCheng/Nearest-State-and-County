@@ -70,6 +70,45 @@ public class Test {
 		return root;
 	}
 	
+	public static RTree readGraphR(String filename) throws FileNotFoundException {
+		RTree rootR = new RTree();
+		Scanner graphScanner = new Scanner (new File(filename)); // Scanner object to convert data to string
+		String line = graphScanner.nextLine(); // read the first line and skip
+		String[] lineArray;
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		double minX = 0, minY = 0, maxX = 0, maxY = 0;
+		int i = 0;
+		String state, county;
+		double x, y;
+		// read Data line by line
+		while (graphScanner.hasNextLine()) {
+			line = graphScanner.nextLine();
+			lineArray = line.trim().split("\\s+");
+			state = lineArray[0];
+			if (lineArray.length > 3) {
+				county = lineArray[1];
+			}
+			else {
+				county = "Empty";
+			}
+			for (int j = 2; j < lineArray.length - 2; j++) {
+				county += " " + lineArray[j];
+			}
+			// county = Arrays.toString(Arrays.copyOfRange(lineArray, 1, lineArray.length - 2));
+			System.out.println(county);
+			x = Double.parseDouble(lineArray[lineArray.length-1]);
+			y = Double.parseDouble(lineArray[lineArray.length-2]);
+			Node node = new Node(x, y, state, county); // create correspond node object
+			nodes.add(node);
+			}
+			for (Node node : nodes) {
+				if(rootR.insert(node) == true) {
+					rootR = rootR.parent;
+				};
+			}
+		return rootR;
+	}
+	
 	public static String[] GetVotesResult(Node[] nearestNodes) {
 		HashMap<String, Integer> stateVotes = new HashMap<String, Integer>();
 		HashMap<String, Integer> countyVotes = new HashMap<String, Integer>();
@@ -137,5 +176,9 @@ public class Test {
 		}
 
 	}
+	//public static void main(String []args) {
+		//System.out.println("Hello World");
+	//}
 
 }
+
