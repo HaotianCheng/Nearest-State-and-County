@@ -1,5 +1,5 @@
 Yang Hu :
 
-Haotian Cheng : QuadTree, GUI, Report-QuadTree & project features part
+Haotian Cheng : QuadTree, GUI, Git ReadME, Report-QuadTree & project features part
 
 Gordon Wallace :
