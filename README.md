@@ -2,7 +2,7 @@
 Get Nearest State and County By Entering Latitude and Longtitude
 
 ## Installation (linux)
-Make sure your current folder is Nearest State/src/Project
+Make sure your current folder is Nearest State/src
 
 To compile the file:
 ```bash
