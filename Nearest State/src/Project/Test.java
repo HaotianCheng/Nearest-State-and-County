@@ -70,6 +70,7 @@ public class Test {
 	public static QuadTree buildQuadTree(ArrayList<Node> nodes, double[] graphBounds) {
 		QuadTree root = new QuadTree(new Coord(graphBounds[0], graphBounds[1]), new Coord(graphBounds[2], graphBounds[3]));
 		for (Node node : nodes) {
+			System.out.println("QuadTree Insert: " + node);
 			root.insert(node);
 		}
 		return root;
@@ -78,6 +79,7 @@ public class Test {
 	public static KDTree buildKDTree(ArrayList<Node> nodes) {
 		KDTree r = new KDTree(nodes.get(0));
 		for (int j=1;j<nodes.size();j++) {
+			System.out.println("KD Tree Insert: " + nodes.get(j));
 			r.insert(nodes.get(j));
 		}
 		return r;

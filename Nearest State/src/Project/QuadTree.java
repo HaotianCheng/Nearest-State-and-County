@@ -76,11 +76,11 @@ public class QuadTree {
 							Node temp = this.node;
 							this.node = null;
 							insert(temp);
-							System.out.println(temp);
+							// System.out.println(temp);
 						}
 					}
 					else {
-						System.out.println(node);
+						// System.out.println(node);
 						sw.insert(node);
 					}
 				}
