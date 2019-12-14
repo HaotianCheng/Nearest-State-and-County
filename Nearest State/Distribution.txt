@@ -1,5 +1,5 @@
-Yang Hu :
+Yang Hu : KD tree, Runtime analysis and comparison graphs, Report-Comparison, Report-Introduction, Report-KD Tree
 
-Haotian Cheng : QuadTree, GUI, Git ReadME, Report-QuadTree & project features part
+Haotian Cheng : QuadTree, GUI, Git ReadME, Report-QuadTree, Report-Project features
 
-Gordon Wallace :
+Gordon Wallace : R Tree, Report-R Tree, PowerPoint
